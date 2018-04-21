@@ -1,32 +1,60 @@
 'use strict'
 
-// const { GraphQLScalarType } = require('graphql')
-// const { Kind } = require('graphql/language')
-const { PolylinesPaths, PolylinesIcons, Polyline, Icon, IconItem, Path } = require('../models')
-// const bcrypt = require('bcrypt')
-// const jwt = require('jsonwebtoken')
-// const slugify = require('slugify')
+const {
+  TracksPaths,
+  TracksIcons,
+  Track,
+  PolylinesPaths,
+  PolylinesIcons,
+  Polyline,
+  Icon,
+  IconItem,
+  Path,
+  Marker
+} = require('../models')
 require('dotenv').config()
 
 const resolvers = {
   Query: {
     async allPolylines () {
-      return await Polyline.all()
+      const polylines = await Polyline.all()
+      return polylines
+    },
+    async allTracks () {
+      const tracks = await Track.all()
+      return tracks
+    },
+    async allMarkers () {
+      const markers = await Marker.all()
+      return markers
     },
     async allIcons () {
-      return await Icon.all()
+      const icons = await Icon.all()
+      return icons
     },
     async allIconItems () {
-      return await IconItem.all()
+      const iconItems = await IconItem.all()
+      return iconItems
     },
     async allPaths () {
-      return await Path.all()
+      const paths = await Path.all()
+      return paths
     },
     async allPolylinesIcons () {
-      return await PolylinesIcons.all()
+      const polylinesIcons = await PolylinesIcons.all()
+      return polylinesIcons
     },
     async allPolylinesPaths () {
-      return await PolylinesPaths.all()
+      const polylinesPaths = await PolylinesPaths.all()
+      return polylinesPaths
+    },
+    async allTracksIcons () {
+      const tracksIcons = await TracksIcons.all()
+      return tracksIcons
+    },
+    async allTracksPaths () {
+      const tracksPaths = await TracksPaths.all()
+      return tracksPaths
     }
   },
 
@@ -38,13 +66,14 @@ const resolvers = {
       strokeColor,
       fillColor
     }) {
-      return await IconItem.create({
+      const iconItem = await IconItem.create({
         path,
         scale,
         strokeWeight,
         strokeColor,
         fillColor
       })
+      return iconItem
     },
 
     async addIcon (_, {
@@ -52,21 +81,23 @@ const resolvers = {
       offset,
       repeat
     }) {
-      return await Icon.create({
+      const icon = await Icon.create({
         iconItemId,
         offset,
         repeat
       })
+      return icon
     },
 
     async addPath (_, {
       lat,
       lng
     }) {
-      return await Path.create({
+      const path = await Path.create({
         lat,
         lng
       })
+      return path
     },
 
     async addPolyline (_, {
@@ -83,50 +114,117 @@ const resolvers = {
         strokeOpacity,
         strokeWeight
       })
-      // await polyline.setPath(paths);
-      // await polyline.setIcons(iconss);
       return polyline
+    },
+
+    async addTrack (_, {
+      name,
+      visible,
+      strokeColor,
+      strokeOpacity,
+      strokeWeight
+    }) {
+      const track = await Track.create({
+        name,
+        visible,
+        strokeColor,
+        strokeOpacity,
+        strokeWeight
+      })
+      return track
+    },
+
+    async addMarker (_, {
+      name,
+      visible,
+      PathId
+    }) {
+      const marker = await Marker.create({
+        name,
+        visible,
+        PathId
+      })
+      return marker
     },
 
     async addPolylinesIcons (_, {
       PolylineId,
       IconId
     }) {
-      return await PolylinesIcons.create({
+      const polylinesIcons = await PolylinesIcons.create({
         PolylineId,
         IconId
       })
+      return polylinesIcons
     },
 
     async addPolylinesPaths (_, {
       PolylineId,
       PathId
     }) {
-      return await PolylinesPaths.create({
+      const polylinesPaths = await PolylinesPaths.create({
         PolylineId,
         PathId
       })
+      return polylinesPaths
+    },
+
+    async addTracksIcons (_, {
+      TrackId,
+      IconId
+    }) {
+      const tracksIcons = await TracksIcons.create({
+        TrackId,
+        IconId
+      })
+      return tracksIcons
+    },
+
+    async addTracksPaths (_, {
+      TrackId,
+      PathId
+    }) {
+      const tracksPaths = await TracksPaths.create({
+        TrackId,
+        PathId
+      })
+      return tracksPaths
     }
   },
 
   Polyline: {
     async icons (polyline) {
-      return await polyline.getIcons()
+      const icons = await polyline.getIcons()
+      return icons
     },
-    async paths (polyline) {
-      return await polyline.getPaths()
+    async path (polyline) {
+      const path = await polyline.getPaths()
+      return path
+    }
+  },
+
+  Track: {
+    async icons (track) {
+      const icons = await track.getIcons()
+      return icons
+    },
+    async path (track) {
+      const path = await track.getPaths()
+      return path
     }
   },
 
   Icon: {
     async iconItem (icon) {
-      return await icon.getIconItem()
+      const iconItem = await icon.getIconItem()
+      return iconItem
     }
   },
 
-  IconItem: {
-    async icons (iconitem) {
-      return await iconitem.getIcons()
+  Marker: {
+    async position (marker) {
+      const position = await marker.getPath()
+      return position
     }
   }
 }

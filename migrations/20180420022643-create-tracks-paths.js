@@ -1,7 +1,8 @@
 'use strict'
+
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('PolylinesPaths', {
+    return queryInterface.createTable('TracksPaths', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -19,6 +20,6 @@ module.exports = {
     })
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('PolylinesPaths')
+    return queryInterface.dropTable('TracksPaths')
   }
 }

@@ -12,7 +12,26 @@ const typeDefs = `
     strokeOpacity: Float
     strokeWeight: Int
     icons: [Icon]
-    paths: [Path]
+    path: [Path]
+  }
+
+  type Track {
+    id: ID!
+    name: String
+    visible: Boolean
+    strokeColor: String
+    strokeOpacity: Float
+    strokeWeight: Int
+    icons: [Icon]
+    path: [Path]
+  }
+
+  type Marker {
+    id: ID!
+    name: String
+    visible: Boolean
+    PathId: Int
+    position: Path
   }
 
   type Icon {
@@ -20,7 +39,7 @@ const typeDefs = `
     iconItemId: Int
     offset: String
     repeat: String
-    iconItem: IconItem 
+    icon: IconItem 
   }
 
   type IconItem {
@@ -51,6 +70,18 @@ const typeDefs = `
     PathId: Int
   }
  
+  type TracksIcons {
+    id: ID!
+    TrackId: Int
+    IconId: Int
+  }
+
+  type TracksPaths {
+    id: ID!
+    TrackId: Int
+    PathId: Int
+  }
+ 
   type Mutation {
     addPolyline (
       name: String,
@@ -58,9 +89,21 @@ const typeDefs = `
       strokeColor: String,
       strokeOpacity: Float,
       strokeWeight: Int,
-      icons: [Int],
-      path: [Int],
     ): Polyline
+
+    addTrack (
+      name: String,
+      visible: Boolean,
+      strokeColor: String,
+      strokeOpacity: Float,
+      strokeWeight: Int,
+    ): Track
+
+    addMarker (
+      name: String,
+      visible: Boolean,
+      PathId: Int,
+    ): Marker
 
     addIcon (
       iconItemId: Int,
@@ -90,15 +133,30 @@ const typeDefs = `
       PolylineId: Int,
       PathId: Int
     ): PolylinesPaths
+
+    addTracksIcons (
+      TrackId: Int,
+      IconId: Int
+    ): TracksIcons
+
+    addTracksPaths (
+      TrackId: Int,
+      PathId: Int
+    ): TracksPaths
+ 
   }
 
   type Query {
     allPolylines: [Polyline]
+    allTracks: [Track]
     allPolylinesIcons: [PolylinesIcons]
+    allTracksIcons: [TracksIcons]
     allPolylinesPaths: [PolylinesPaths]
+    allTracksPaths: [TracksPaths]
     allIcons: [Icon]
     allIconItems: [IconItem]
     allPaths: [Path]
+    allMarkers: [Marker]
   }
 `
 
