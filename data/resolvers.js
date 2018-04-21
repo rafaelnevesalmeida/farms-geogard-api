@@ -215,9 +215,9 @@ const resolvers = {
   },
 
   Icon: {
-    async iconItem (icon) {
-      const iconItem = await icon.getIconItem()
-      return iconItem
+    async icon (iconOwner) {
+      const icon = await iconOwner.getIconItem()
+      return icon
     }
   },
 
