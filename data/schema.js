@@ -82,6 +82,23 @@ const typeDefs = `
     PathId: Int
   }
  
+  type Task {
+    id: ID!
+    name: String
+    visible: Boolean
+    polylines: [Polyline]
+    tasksPolylines: [TasksPolylines]
+  }
+
+   type TasksPolylines {
+    id: ID!
+    TaskId: Int
+    PolylineId: Int
+    polyline: Polyline
+    Inverse: Boolean
+    Sequence: Int
+  }
+ 
   type Mutation {
     addPolyline (
       name: String,
@@ -90,6 +107,10 @@ const typeDefs = `
       strokeOpacity: Float,
       strokeWeight: Int,
     ): Polyline
+
+    visiblePolyline (
+      id: Int
+    ): Boolean
 
     addTrack (
       name: String,
@@ -144,6 +165,41 @@ const typeDefs = `
       PathId: Int
     ): TracksPaths
  
+    addTask (
+      name: String,
+      visible: Boolean
+    ): Task
+
+    delTask (
+      id: Int
+    ): Boolean
+
+    visibleTask (
+      id: Int
+    ): Boolean
+
+    addTasksPolylines (
+      TaskId: Int,
+      PolylineId: Int,
+      Inverse: Boolean,
+      Sequence: Int
+    ): TasksPolylines
+ 
+    delTasksPolylines (
+      id: Int
+    ): Boolean
+ 
+    upPolylineOnTask (
+      id: Int
+    ): Boolean
+
+    downPolylineOnTask (
+      id: Int
+    ): Boolean
+
+    inverseTasksPolylines (
+      id: Int
+    ): Boolean
   }
 
   type Query {
@@ -157,6 +213,11 @@ const typeDefs = `
     allIconItems: [IconItem]
     allPaths: [Path]
     allMarkers: [Marker]
+    allTasks: [Task]
+    allTasksPolylines: [TasksPolylines]
+    findTasks: [Task]
+    findTaskOrderer (id: Int): Task
+    tasksPolylinesByTask (taskId: Int): [TasksPolylines]
   }
 `
 

@@ -29,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
   Polyline.associate = function (models) {
     Polyline.belongsToMany(models.Icon, { through: 'PolylinesIcons' })
     Polyline.belongsToMany(models.Path, { through: 'PolylinesPaths' })
+    // Polyline.hasMany(models.TasksPolylines)
   }
   return Polyline
 }

@@ -1,5 +1,5 @@
 'use strict'
-
+// TODO replace it to ES6
 const cors = require('cors')
 const express = require('express')
 const bodyParser = require('body-parser')
