@@ -8,22 +8,18 @@ const typeDefs = `
     id: ID!
     name: String
     visible: Boolean
+    lineTypeId: Int
+    lineType: LineType
     strokeColor: String
-    strokeOpacity: Float
-    strokeWeight: Int
-    icons: [Icon]
     path: [Path]
   }
 
-  type Track {
+  type LineType {
     id: ID!
-    name: String
-    visible: Boolean
-    strokeColor: String
+    label: String
     strokeOpacity: Float
     strokeWeight: Int
     icons: [Icon]
-    path: [Path]
   }
 
   type Marker {
@@ -49,7 +45,6 @@ const typeDefs = `
     strokeWeight: Int
     strokeColor: String
     fillColor: String
-    icons: [Icon]
   }
  
   type Path {
@@ -58,27 +53,15 @@ const typeDefs = `
     lng: Float
   }
 
-  type PolylinesIcons {
+  type LineTypesIcons {
     id: ID!
-    PolylineId: Int
+    LineTypeId: Int
     IconId: Int
   }
 
   type PolylinesPaths {
     id: ID!
     PolylineId: Int
-    PathId: Int
-  }
- 
-  type TracksIcons {
-    id: ID!
-    TrackId: Int
-    IconId: Int
-  }
-
-  type TracksPaths {
-    id: ID!
-    TrackId: Int
     PathId: Int
   }
  
@@ -99,26 +82,53 @@ const typeDefs = `
     Sequence: Int
   }
  
+  type Waypoint {
+    id: ID!
+    lat: Float
+    lon: Float
+    hdgSrcId: Int
+    weedingPatternId: Int
+    command:  String
+    hdgSrc: HdgSrc
+    weedingPattern: WeedingPattern
+  }
+
+  type HdgSrc {
+    id: ID!
+    name: String
+  }
+
+  type WeedingPattern {
+    id: ID!
+    name: String
+  }
+
   type Mutation {
     addPolyline (
       name: String,
       visible: Boolean,
+      lineTypeId: Int,
       strokeColor: String,
-      strokeOpacity: Float,
-      strokeWeight: Int,
     ): Polyline
+
+    addLineType (
+      label: String,
+      strokeopacity: Float,
+      strokeweight: Int,
+    ): LineType
+
+    addLineTypesIcons (
+      LineTypeId: Int,
+      IconId: Int
+    ): LineTypesIcons
 
     visiblePolyline (
       id: Int
     ): Boolean
 
-    addTrack (
-      name: String,
-      visible: Boolean,
-      strokeColor: String,
-      strokeOpacity: Float,
-      strokeWeight: Int,
-    ): Track
+    visibleMarker (
+      id: Int
+    ): Boolean
 
     addMarker (
       name: String,
@@ -145,26 +155,11 @@ const typeDefs = `
       lng: Float,
     ): Path
 
-    addPolylinesIcons (
-      PolylineId: Int,
-      IconId: Int
-    ): PolylinesIcons
-
     addPolylinesPaths (
       PolylineId: Int,
       PathId: Int
     ): PolylinesPaths
 
-    addTracksIcons (
-      TrackId: Int,
-      IconId: Int
-    ): TracksIcons
-
-    addTracksPaths (
-      TrackId: Int,
-      PathId: Int
-    ): TracksPaths
- 
     addTask (
       name: String,
       visible: Boolean
@@ -200,15 +195,44 @@ const typeDefs = `
     inverseTasksPolylines (
       id: Int
     ): Boolean
+
+    addWaypoint (
+      lat: Float,
+      lon: Float,
+      hdgSrcId: Int,
+      weedingPatternId: Int,
+      command:  String,
+    ): Waypoint
+
+    addHdgSrc (
+      name: String,
+    ): HdgSrc
+ 
+    addWeedingPattern (
+      name: String,
+    ): WeedingPattern
+
+    setHdgSrcWaypoint (
+      waypointId: Int,
+      hdgSrcId: Int,
+    ): Boolean
+
+    setWeedingPatternWaypoint (
+      waypointId: Int,
+      weedingPatternId: Int,
+    ): Boolean
+
+    setCommandWayPoint (
+      waypointId: Int,
+      command: String
+    ): Boolean
   }
 
   type Query {
     allPolylines: [Polyline]
-    allTracks: [Track]
-    allPolylinesIcons: [PolylinesIcons]
-    allTracksIcons: [TracksIcons]
+    allLineTypes: [LineType]
+    allLineTypesIcons: [LineTypesIcons]
     allPolylinesPaths: [PolylinesPaths]
-    allTracksPaths: [TracksPaths]
     allIcons: [Icon]
     allIconItems: [IconItem]
     allPaths: [Path]
@@ -218,6 +242,10 @@ const typeDefs = `
     findTasks: [Task]
     findTaskOrderer (id: Int): Task
     tasksPolylinesByTask (taskId: Int): [TasksPolylines]
+    polylinesByType (lineTypeId: Int): [Polyline]
+    allWaypoints: [Waypoint]
+    allHdgSrc: [HdgSrc]
+    allWeedingPattern: [WeedingPattern]
   }
 `
 

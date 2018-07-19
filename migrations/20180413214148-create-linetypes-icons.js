@@ -1,14 +1,14 @@
 'use strict'
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('PolylinesIcons', {
+    return queryInterface.createTable('LineTypesIcons', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      PolylineId: {
+      LyneTypeId: {
         type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false
       },
@@ -19,6 +19,6 @@ module.exports = {
     })
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('PolylinesIcons')
+    return queryInterface.dropTable('LineTypesIcons')
   }
 }

@@ -17,19 +17,15 @@ module.exports = (sequelize, DataTypes) => {
     strokeColor: {
       type: DataTypes.STRING
     },
-    strokeOpacity: {
-      type: DataTypes.FLOAT
-    },
-    strokeWeight: {
+    lineTypeId: {
       type: DataTypes.INTEGER
     }
   }, {
     timestamps: false
   })
   Polyline.associate = function (models) {
-    Polyline.belongsToMany(models.Icon, { through: 'PolylinesIcons' })
+    Polyline.belongsTo(models.LineType)
     Polyline.belongsToMany(models.Path, { through: 'PolylinesPaths' })
-    // Polyline.hasMany(models.TasksPolylines)
   }
   return Polyline
 }

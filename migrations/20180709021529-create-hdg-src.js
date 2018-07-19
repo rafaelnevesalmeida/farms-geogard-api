@@ -1,8 +1,7 @@
 'use strict'
-
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Polylines', {
+    return queryInterface.createTable('HdgSrcs', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,19 +10,10 @@ module.exports = {
       },
       name: {
         type: Sequelize.STRING
-      },
-      strokeColor: {
-        type: Sequelize.STRING
-      },
-      visible: {
-        type: Sequelize.BOOLEAN
-      },
-      linetypeId: {
-        type: Sequelize.INTEGER
       }
     })
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Polylines')
+    return queryInterface.dropTable('HdgSrcs')
   }
 }

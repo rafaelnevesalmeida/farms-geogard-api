@@ -1,32 +1,31 @@
 'use strict'
-
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Tracks', {
+    return queryInterface.createTable('Waypoints', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
-        type: Sequelize.STRING
-      },
-      visible: {
-        type: Sequelize.BOOLEAN
-      },
-      strokeColor: {
-        type: Sequelize.STRING
-      },
-      strokeOpacity: {
+      lat: {
         type: Sequelize.FLOAT
       },
-      strokeWeight: {
+      lon: {
+        type: Sequelize.FLOAT
+      },
+      hdgSrcId: {
         type: Sequelize.INTEGER
+      },
+      weedingPatternId: {
+        type: Sequelize.INTEGER
+      },
+      command: {
+        type: Sequelize.STRING
       }
     })
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Tracks')
+    return queryInterface.dropTable('Waypoints')
   }
 }

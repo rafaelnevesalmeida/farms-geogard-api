@@ -1,20 +1,14 @@
 'use strict'
 
 module.exports = (sequelize, DataTypes) => {
-  var Track = sequelize.define('Track', {
+  var LineType = sequelize.define('LineType', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
       allowNull: false
     },
-    name: {
-      type: DataTypes.STRING
-    },
-    visible: {
-      type: DataTypes.BOOLEAN
-    },
-    strokeColor: {
+    label: {
       type: DataTypes.STRING
     },
     strokeOpacity: {
@@ -26,9 +20,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     timestamps: false
   })
-  Track.associate = function (models) {
-    Track.belongsToMany(models.Icon, { through: 'TracksIcons' })
-    Track.belongsToMany(models.Path, { through: 'TracksPaths' })
+  LineType.associate = function (models) {
+    LineType.belongsToMany(models.Icon, { through: 'LineTypesIcons' })
   }
-  return Track
+  return LineType
 }

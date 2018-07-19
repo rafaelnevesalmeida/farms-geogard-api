@@ -1,25 +1,24 @@
 'use strict'
-
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('TracksPaths', {
+    return queryInterface.createTable('LineTypesIcons', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      TrackId: {
+      LyneTypeId: {
         type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false
       },
-      PathId: {
+      IconId: {
         type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false
       }
     })
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('TracksPaths')
+    return queryInterface.dropTable('LineTypesIcons')
   }
 }

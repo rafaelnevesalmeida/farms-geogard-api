@@ -3,18 +3,19 @@ var Sequelize = require('sequelize')
 const Op = Sequelize.Op
 
 const {
-  TracksPaths,
-  TracksIcons,
-  Track,
+  LineTypesIcons,
+  LineType,
   PolylinesPaths,
-  PolylinesIcons,
   Polyline,
   Icon,
   IconItem,
   Path,
   Marker,
   Task,
-  TasksPolylines
+  TasksPolylines,
+  Waypoint,
+  HdgSrc,
+  WeedingPattern
 } = require('../models')
 require('dotenv').config()
 
@@ -24,9 +25,9 @@ const resolvers = {
       const polylines = await Polyline.all()
       return polylines
     },
-    async allTracks () {
-      const tracks = await Track.all()
-      return tracks
+    async allLineTypes () {
+      const lineTypes = await LineType.all()
+      return lineTypes
     },
     async allMarkers () {
       const markers = await Marker.all()
@@ -44,21 +45,13 @@ const resolvers = {
       const paths = await Path.all()
       return paths
     },
-    async allPolylinesIcons () {
-      const polylinesIcons = await PolylinesIcons.all()
-      return polylinesIcons
+    async allLineTypesIcons () {
+      const lineTypesIcons = await LineTypesIcons.all()
+      return lineTypesIcons
     },
     async allPolylinesPaths () {
       const polylinesPaths = await PolylinesPaths.all()
       return polylinesPaths
-    },
-    async allTracksIcons () {
-      const tracksIcons = await TracksIcons.all()
-      return tracksIcons
-    },
-    async allTracksPaths () {
-      const tracksPaths = await TracksPaths.all()
-      return tracksPaths
     },
     async allTasks () {
       const tasks = await Task.all()
@@ -97,8 +90,29 @@ const resolvers = {
         where: { TaskId: taskId },
         order: [['Sequence', 'ASC']]
       })
-    }
+    },
 
+    async polylinesByType (_, { lineTypeId }) {
+      return Polyline.findAll({
+        where: { lineTypeId: lineTypeId },
+        order: [['name', 'ASC']]
+      })
+    },
+
+    async allWaypoints () {
+      const waypoints = await Waypoint.all()
+      return waypoints
+    },
+
+    async allHdgSrc () {
+      const hdgSrc = await HdgSrc.all()
+      return hdgSrc
+    },
+
+    async allWeedingPattern () {
+      const weedingPattern = await WeedingPattern.all()
+      return weedingPattern
+    }
   },
 
   Mutation: {
@@ -147,15 +161,13 @@ const resolvers = {
       name,
       visible,
       strokeColor,
-      strokeOpacity,
-      strokeWeight
+      lineTypeId
     }) {
       const polyline = await Polyline.create({
         name,
         visible,
         strokeColor,
-        strokeOpacity,
-        strokeWeight
+        lineTypeId
       })
       return polyline
     },
@@ -174,21 +186,31 @@ const resolvers = {
       return result
     },
 
-    async addTrack (_, {
-      name,
-      visible,
-      strokeColor,
+    async visibleMarker (_, { id }) {
+      let result = false
+      let marker = await Marker.findById(id)
+
+      if (marker != null) {
+        Marker.update({ visible: !marker.visible }, {
+          where: { id: id }
+        }).then(
+          result = true
+        )
+      }
+      return result
+    },
+
+    async addLineType (_, {
+      label,
       strokeOpacity,
       strokeWeight
     }) {
-      const track = await Track.create({
-        name,
-        visible,
-        strokeColor,
+      const lineType = await LineType.create({
+        label,
         strokeOpacity,
         strokeWeight
       })
-      return track
+      return lineType
     },
 
     async addMarker (_, {
@@ -204,15 +226,15 @@ const resolvers = {
       return marker
     },
 
-    async addPolylinesIcons (_, {
-      PolylineId,
+    async addLineTypesIcons (_, {
+      LineTypeId,
       IconId
     }) {
-      const polylinesIcons = await PolylinesIcons.create({
-        PolylineId,
+      const lineTypesIcons = await LineTypesIcons.create({
+        LineTypeId,
         IconId
       })
-      return polylinesIcons
+      return lineTypesIcons
     },
 
     async addPolylinesPaths (_, {
@@ -224,28 +246,6 @@ const resolvers = {
         PathId
       })
       return polylinesPaths
-    },
-
-    async addTracksIcons (_, {
-      TrackId,
-      IconId
-    }) {
-      const tracksIcons = await TracksIcons.create({
-        TrackId,
-        IconId
-      })
-      return tracksIcons
-    },
-
-    async addTracksPaths (_, {
-      TrackId,
-      PathId
-    }) {
-      const tracksPaths = await TracksPaths.create({
-        TrackId,
-        PathId
-      })
-      return tracksPaths
     },
 
     async addTask (_, {
@@ -389,28 +389,94 @@ const resolvers = {
         )
       }
       return result
+    },
+
+    async addWaypoint (_, {
+      lat,
+      lon,
+      hdgSrcId,
+      weedingPatternId,
+      command
+    }) {
+      const waypoint = await Waypoint.create({
+        lat,
+        lon,
+        hdgSrcId,
+        weedingPatternId,
+        command
+      })
+      return waypoint
+    },
+
+    async addHdgSrc (_, { name }) {
+      const hdgSrc = await HdgSrc.create({
+        name
+      })
+      return hdgSrc
+    },
+
+    async addWeedingPattern (_, { name }) {
+      const weedingPattern = await WeedingPattern.create({
+        name
+      })
+      return weedingPattern
+    },
+
+    async setHdgSrcWaypoint (_, {
+      waypointId,
+      hdgSrcId
+    }) {
+      let result = false
+
+      Waypoint.update({ hdgSrcId: hdgSrcId }, {
+        where: { id: waypointId }
+      }).then(
+        result = true
+      )
+      return result
+    },
+
+    async setWeedingPatternWaypoint (_, {
+      waypointId,
+      weedingPatternId
+    }) {
+      let result = false
+
+      Waypoint.update({ weedingPatternId: weedingPatternId }, {
+        where: { id: waypointId }
+      }).then(
+        result = true
+      )
+      return result
+    },
+
+    async setCommandWayPoint (_, { waypointId, command }) {
+      let result = false
+
+      Waypoint.update({ command: command }, {
+        where: { id: waypointId }
+      }).then(
+        result = true
+      )
+      return result
     }
   },
 
   Polyline: {
-    async icons (polyline) {
-      const icons = await polyline.getIcons()
-      return icons
-    },
     async path (polyline) {
       const path = await polyline.getPaths()
       return path
+    },
+    async lineType (polyline) {
+      const lineType = await polyline.getLineType()
+      return lineType
     }
   },
 
-  Track: {
-    async icons (track) {
-      const icons = await track.getIcons()
+  LineType: {
+    async icons (lineType) {
+      const icons = await lineType.getIcons()
       return icons
-    },
-    async path (track) {
-      const path = await track.getPaths()
-      return path
     }
   },
 
@@ -443,6 +509,17 @@ const resolvers = {
     async polyline (tasksPolylines) {
       const polyline = await tasksPolylines.getPolyline()
       return polyline
+    }
+  },
+
+  Waypoint: {
+    async hdgSrc (waypoint) {
+      const hdgSrc = await waypoint.getHdgSrc()
+      return hdgSrc
+    },
+    async weedingPattern (waypoint) {
+      const weedingPattern = await waypoint.getWeedingPattern()
+      return weedingPattern
     }
   }
 }

@@ -1,14 +1,14 @@
 'use strict'
 
 module.exports = (sequelize, DataTypes) => {
-  var TracksIcons = sequelize.define('TracksIcons', {
+  var LineTypesIcons = sequelize.define('LineTypesIcons', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
       allowNull: false
     },
-    TrackId: {
+    LineTypeId: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false
     },
@@ -19,8 +19,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     timestamps: false
   })
-  TracksIcons.associate = function (models) {
-    // associations can be defined here
+  LineTypesIcons.associate = function (models) {
   }
-  return TracksIcons
+  return LineTypesIcons
 }
