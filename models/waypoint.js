@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes) => {
     lon: {
       type: DataTypes.FLOAT
     },
+    visible: {
+      type: DataTypes.BOOLEAN
+    },
     hdgSrcId: {
       type: DataTypes.INTEGER.UNSIGNED
     },

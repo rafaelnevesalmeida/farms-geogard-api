@@ -25,7 +25,8 @@ module.exports = (sequelize, DataTypes) => {
   })
   Polyline.associate = function (models) {
     Polyline.belongsTo(models.LineType)
-    Polyline.belongsToMany(models.Path, { through: 'PolylinesPaths' })
+    Polyline.belongsToMany(models.Waypoint, { through: 'PolylinesWaypoints' })
+    Polyline.hasMany(models.PolylinesWaypoints)
   }
   return Polyline
 }

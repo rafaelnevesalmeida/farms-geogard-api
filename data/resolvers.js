@@ -5,11 +5,10 @@ const Op = Sequelize.Op
 const {
   LineTypesIcons,
   LineType,
-  PolylinesPaths,
+  PolylinesWaypoints,
   Polyline,
   Icon,
   IconItem,
-  Path,
   Marker,
   Task,
   TasksPolylines,
@@ -41,17 +40,13 @@ const resolvers = {
       const iconItems = await IconItem.all()
       return iconItems
     },
-    async allPaths () {
-      const paths = await Path.all()
-      return paths
-    },
     async allLineTypesIcons () {
       const lineTypesIcons = await LineTypesIcons.all()
       return lineTypesIcons
     },
-    async allPolylinesPaths () {
-      const polylinesPaths = await PolylinesPaths.all()
-      return polylinesPaths
+    async allPolylinesWaypoints () {
+      const polylinesWaypoints = await PolylinesWaypoints.all()
+      return polylinesWaypoints
     },
     async allTasks () {
       const tasks = await Task.all()
@@ -74,6 +69,7 @@ const resolvers = {
         ] */
       })
     },
+
     async findTaskOrderer (_, { id }) {
       return Task.findOne({
         where: { id: id },
@@ -112,6 +108,13 @@ const resolvers = {
     async allWeedingPattern () {
       const weedingPattern = await WeedingPattern.all()
       return weedingPattern
+    },
+
+    async polylinesWaypointsByPolyline (_, { polylineId }) {
+      return PolylinesWaypoints.findAll({
+        where: { PolylineId: polylineId },
+        order: [['WaypointId', 'ASC']]
+      })
     }
   },
 
@@ -144,17 +147,6 @@ const resolvers = {
         repeat
       })
       return icon
-    },
-
-    async addPath (_, {
-      lat,
-      lng
-    }) {
-      const path = await Path.create({
-        lat,
-        lng
-      })
-      return path
     },
 
     async addPolyline (_, {
@@ -216,12 +208,12 @@ const resolvers = {
     async addMarker (_, {
       name,
       visible,
-      PathId
+      WaypointId
     }) {
       const marker = await Marker.create({
         name,
         visible,
-        PathId
+        WaypointId
       })
       return marker
     },
@@ -237,15 +229,15 @@ const resolvers = {
       return lineTypesIcons
     },
 
-    async addPolylinesPaths (_, {
+    async addPolylinesWaypoints (_, {
       PolylineId,
-      PathId
+      WaypointId
     }) {
-      const polylinesPaths = await PolylinesPaths.create({
+      const polylinesWaypoints = await PolylinesWaypoints.create({
         PolylineId,
-        PathId
+        WaypointId
       })
-      return polylinesPaths
+      return polylinesWaypoints
     },
 
     async addTask (_, {
@@ -394,6 +386,7 @@ const resolvers = {
     async addWaypoint (_, {
       lat,
       lon,
+      visible,
       hdgSrcId,
       weedingPatternId,
       command
@@ -401,6 +394,7 @@ const resolvers = {
       const waypoint = await Waypoint.create({
         lat,
         lon,
+        visible,
         hdgSrcId,
         weedingPatternId,
         command
@@ -450,7 +444,7 @@ const resolvers = {
       return result
     },
 
-    async setCommandWayPoint (_, { waypointId, command }) {
+    async setCommandWaypoint (_, { waypointId, command }) {
       let result = false
 
       Waypoint.update({ command: command }, {
@@ -459,17 +453,41 @@ const resolvers = {
         result = true
       )
       return result
+    },
+
+    async visibleWaypoint (_, { id }) {
+      let result = false
+      let waypoint = await Waypoint.findById(id)
+
+      if (waypoint != null) {
+        Waypoint.update({ visible: !waypoint.visible }, {
+          where: { id: id }
+        }).then(
+          result = true
+        )
+      }
+      return result
+    },
+
+    async delPolylinesWaypoints (_, { id }) {
+      return PolylinesWaypoints.destroy({
+        where: { id }
+      })
     }
   },
 
   Polyline: {
-    async path (polyline) {
-      const path = await polyline.getPaths()
-      return path
+    async waypoint (polyline) {
+      const waypoint = await polyline.getWaypoints()
+      return waypoint
     },
     async lineType (polyline) {
       const lineType = await polyline.getLineType()
       return lineType
+    },
+    async polylinesWaypoints (polyline) {
+      const polylinesWaypoints = await polyline.getPolylinesWaypoints()
+      return polylinesWaypoints
     }
   },
 
@@ -489,7 +507,7 @@ const resolvers = {
 
   Marker: {
     async position (marker) {
-      const position = await marker.getPath()
+      const position = await marker.getWaypoint()
       return position
     }
   },
@@ -509,6 +527,13 @@ const resolvers = {
     async polyline (tasksPolylines) {
       const polyline = await tasksPolylines.getPolyline()
       return polyline
+    }
+  },
+
+  PolylinesWaypoints: {
+    async waypoint (polylinesWaypoints) {
+      const waypoint = await polylinesWaypoints.getWaypoint()
+      return waypoint
     }
   },
 

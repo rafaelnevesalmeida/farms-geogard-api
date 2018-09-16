@@ -11,7 +11,8 @@ const typeDefs = `
     lineTypeId: Int
     lineType: LineType
     strokeColor: String
-    path: [Path]
+    waypoint: [Waypoint]
+    polylinesWaypoints: [PolylinesWaypoints]
   }
 
   type LineType {
@@ -26,8 +27,8 @@ const typeDefs = `
     id: ID!
     name: String
     visible: Boolean
-    PathId: Int
-    position: Path
+    waypointId: Int
+    position: Waypoint
   }
 
   type Icon {
@@ -47,22 +48,17 @@ const typeDefs = `
     fillColor: String
   }
  
-  type Path {
-    id: ID!
-    lat: Float
-    lng: Float
-  }
-
   type LineTypesIcons {
     id: ID!
     LineTypeId: Int
     IconId: Int
   }
 
-  type PolylinesPaths {
+  type PolylinesWaypoints {
     id: ID!
     PolylineId: Int
-    PathId: Int
+    WaypointId: Int
+    waypoint: Waypoint
   }
  
   type Task {
@@ -86,6 +82,7 @@ const typeDefs = `
     id: ID!
     lat: Float
     lon: Float
+    visible: Boolean
     hdgSrcId: Int
     weedingPatternId: Int
     command:  String
@@ -133,7 +130,7 @@ const typeDefs = `
     addMarker (
       name: String,
       visible: Boolean,
-      PathId: Int,
+      WaipointId: Int,
     ): Marker
 
     addIcon (
@@ -150,15 +147,10 @@ const typeDefs = `
       fillColor: String
     ): IconItem
    
-    addPath (
-      lat: Float,
-      lng: Float,
-    ): Path
-
-    addPolylinesPaths (
+    addPolylinesWaypoints (
       PolylineId: Int,
-      PathId: Int
-    ): PolylinesPaths
+      WaypointId: Int
+    ): PolylinesWaypoints
 
     addTask (
       name: String,
@@ -184,6 +176,10 @@ const typeDefs = `
       id: Int
     ): Boolean
  
+    delPolylinesWaypoints (
+      id: Int
+    ): Boolean
+
     upPolylineOnTask (
       id: Int
     ): Boolean
@@ -199,6 +195,7 @@ const typeDefs = `
     addWaypoint (
       lat: Float,
       lon: Float,
+      visible: Boolean,
       hdgSrcId: Int,
       weedingPatternId: Int,
       command:  String,
@@ -222,20 +219,24 @@ const typeDefs = `
       weedingPatternId: Int,
     ): Boolean
 
-    setCommandWayPoint (
+    setCommandWaypoint (
       waypointId: Int,
       command: String
     ): Boolean
+
+    visibleWaypoint (
+      id: Int
+    ): Boolean
+    
   }
 
   type Query {
     allPolylines: [Polyline]
     allLineTypes: [LineType]
     allLineTypesIcons: [LineTypesIcons]
-    allPolylinesPaths: [PolylinesPaths]
+    allPolylinesWaypoints: [PolylinesWaypoints]
     allIcons: [Icon]
     allIconItems: [IconItem]
-    allPaths: [Path]
     allMarkers: [Marker]
     allTasks: [Task]
     allTasksPolylines: [TasksPolylines]
@@ -246,6 +247,7 @@ const typeDefs = `
     allWaypoints: [Waypoint]
     allHdgSrc: [HdgSrc]
     allWeedingPattern: [WeedingPattern]
+    polylinesWaypointsByPolyline (polylineId: Int): [PolylinesWaypoints]
   }
 `
 

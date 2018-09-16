@@ -14,6 +14,9 @@ module.exports = {
       lon: {
         type: Sequelize.FLOAT
       },
+      visible: {
+        type: Sequelize.BOOLEAN
+      },
       hdgSrcId: {
         type: Sequelize.INTEGER
       },
