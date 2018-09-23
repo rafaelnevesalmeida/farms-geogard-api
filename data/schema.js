@@ -228,6 +228,15 @@ const typeDefs = `
       id: Int
     ): Boolean
     
+    editTaskName (
+      id: Int,
+      name: String
+    ): Boolean
+
+    editPolylineName (
+      id: Int,
+      name: String
+    ): Boolean
   }
 
   type Query {

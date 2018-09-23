@@ -473,7 +473,36 @@ const resolvers = {
       return PolylinesWaypoints.destroy({
         where: { id }
       })
+    },
+
+    async editTaskName (_, { id, name }) {
+      let result = false
+      let task = await Task.findById(id)
+
+      if (task != null) {
+        Task.update({ name: name }, {
+          where: { id: id }
+        }).then(
+          result = true
+        )
+      }
+      return result
+    },
+
+    async editPolylineName (_, { id, name }) {
+      let result = false
+      let polyline = await Polyline.findById(id)
+
+      if (polyline != null) {
+        Polyline.update({ name: name }, {
+          where: { id: id }
+        }).then(
+          result = true
+        )
+      }
+      return result
     }
+
   },
 
   Polyline: {
